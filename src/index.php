@@ -5,17 +5,33 @@ require 'vendor/autoload.php';
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use \Slim\Factory\AppFactory;
+use Slim\Factory\ServerRequestCreatorFactory;
+
+// Настройка отображения подробностей ошибок
+$displayErrorDetails = true;
 
 $app = AppFactory::create();
 
 $app->get('/api[/{path:.*}]', function (Request $request, Response $response, $args) {
 	$apiResponse = ApiController::handleRequest($request, $response);
 	$response->getBody()->write($apiResponse);
-	$finalResponse = $response->withHeader('Content-Type', 'application/json');
-    return $finalResponse;
+	return $response->withHeader('Content-Type', 'application/json');
 });
 
-$app->addErrorMiddleware(false, true, true);
+$callableResolver = $app->getCallableResolver();
+$responseFactory = $app->getResponseFactory();
+
+$serverRequestCreator = ServerRequestCreatorFactory::create();
+$request = $serverRequestCreator->createServerRequestFromGlobals();
+
+$errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+$shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails);
+register_shutdown_function($shutdownHandler);
+
+// Добавление промежуточного ПО обработки ошибок
+$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
+$errorMiddleware->setDefaultErrorHandler($errorHandler);
+
 $app->run();
 
 function debug($variable, $trace = false, $die = true) {
