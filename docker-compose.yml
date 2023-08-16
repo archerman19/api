@@ -19,4 +19,18 @@ services:
       - ./src:/var/www/html
     restart: on-failure
     tty: true
+    depends_on:
+      - db
     stdin_open: true
+  db:
+    image: mysql:8.0
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABASE=main
+      - MYSQL_ROOT_PASSWORD=adergunov
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./docker/db:/var/lib/mysql

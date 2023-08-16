@@ -12,6 +12,6 @@ class ApiController {
 		$params = $request->getQueryParams();
 		$classname = "Api\\$version\\$module";
 
-		return call_user_func_array([new $classname(), $method], $params);
+		return call_user_func_array([new $classname($request, $response), $method], $params);
 	}
 }
