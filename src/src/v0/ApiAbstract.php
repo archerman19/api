@@ -17,6 +17,10 @@ abstract class ApiAbstract {
 	}
 
 	protected function toJson() {
-		return json_encode(get_object_vars($this));
+		return json_encode([
+			'statusCode' => $this->statusCode,
+			'data' => $this->data,
+			'error' => $this->error
+		]);
 	}
 }

@@ -26,6 +26,11 @@ class Users extends ApiAbstract {
 		return $this->toJson();
 	}
 
+	/**
+	 * Вход в систему
+	 *
+	 * @return string
+	 */
 	public function login() {
 		$data = $this->request->getBody()->getContents();
 		$data = json_decode($data, true);
@@ -45,7 +50,7 @@ class Users extends ApiAbstract {
 				]
 			];
 
-			$jwt = JWT::encode($token, "my_app", 'HS256');
+			$jwt = JWT::encode($token, 'my_app', 'HS256');
 
 			$this->data[] = [
 				'message' => "Успешный вход в систему",

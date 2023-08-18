@@ -12,8 +12,15 @@ $displayErrorDetails = true;
 
 $app = AppFactory::create();
 
-$app->get('/api[/{path:.*}]', function (Request $request, Response $response, $args) {
-	$apiResponse = ApiController::handleRequest($request, $response);
+$app->any('/api[/{path:.*}]', function (Request $request, Response $response, $args) {
+	$apiResponse = (new ApiController($request, $response))->handleRequest();
+	if (isset($apiResponse['status']) && $apiResponse['status'] === 405) {
+		$response->getBody()->write($apiResponse['data']);
+		return $response
+			->withStatus(405)
+			->withHeader('Content-Type', 'application/json')
+		;
+	}
 	$response->getBody()->write($apiResponse);
 	return $response->withHeader('Content-Type', 'application/json');
 });

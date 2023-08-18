@@ -1,5 +1,7 @@
 <?php
 
+use \Firebase\JWT\JWT;
+use \Firebase\JWT\Key; 
 class User
 {
     public $id;
@@ -17,5 +19,15 @@ class User
 		$user->password = $data['password'];
 
 		return $user;
+	}
+
+	public function checkValidToken(string $token) : bool {
+		try {
+			$decoded = JWT::decode($token, new Key('my_app', 'HS256'));
+			$userId = $decoded->data->id;
+			return (bool) (new UsersModel())->get((int)$userId);
+		} catch (Exception $e) {
+			return false;
+		}
 	}
 }
