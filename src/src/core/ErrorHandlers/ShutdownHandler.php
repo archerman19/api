@@ -1,6 +1,7 @@
 <?php
 
-use MyApp\Handlers\HttpErrorHandler;
+namespace core;
+
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\ResponseEmitter;
@@ -29,7 +30,7 @@ class ShutdownHandler
      * @param HttpErrorHandler  $errorHandler
      * @param bool              $displayErrorDetails
      */
-    public function __construct(Request $request, \HttpErrorHandler $errorHandler, bool $displayErrorDetails) {
+    public function __construct(Request $request, HttpErrorHandler $errorHandler, bool $displayErrorDetails) {
         $this->request = $request;
         $this->errorHandler = $errorHandler;
         $this->displayErrorDetails = $displayErrorDetails;

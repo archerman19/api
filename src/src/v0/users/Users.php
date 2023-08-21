@@ -50,7 +50,7 @@ class Users extends ApiAbstract {
 				]
 			];
 
-			$jwt = JWT::encode($token, 'my_app', 'HS256');
+			$jwt = JWT::encode($token, $_ENV['JWT_KEY'], 'HS256');
 
 			$this->data[] = [
 				'message' => "Успешный вход в систему",

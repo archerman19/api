@@ -23,7 +23,8 @@ class User
 
 	public function checkValidToken(string $token) : bool {
 		try {
-			$decoded = JWT::decode($token, new Key('my_app', 'HS256'));
+			$key = $_ENV['JWT_KEY'];
+			$decoded = JWT::decode($token, new Key($key, 'HS256'));
 			$userId = $decoded->data->id;
 			return (bool) (new UsersModel())->get((int)$userId);
 		} catch (Exception $e) {
