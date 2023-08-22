@@ -5,7 +5,6 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 abstract class ApiAbstract {
-	protected int $statusCode = 200;
 	protected array $data = [];
 	protected array $error = [];
 	protected Request $request;
@@ -16,11 +15,13 @@ abstract class ApiAbstract {
 		$this->response = $response;
 	}
 
-	protected function toJson() {
-		return json_encode([
-			'statusCode' => $this->statusCode,
+	protected function response(int $statusCode = 200) {
+		$this->response->getBody()->write(
+			json_encode([
 			'data' => $this->data,
 			'error' => $this->error
-		]);
+			])
+		);
+		return $this->response->withHeader('Content-Type', 'application/json')->withStatus($statusCode);
 	}
 }

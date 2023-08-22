@@ -1,7 +1,10 @@
 <?php
 
+namespace entity;
+
 use \Firebase\JWT\JWT;
-use \Firebase\JWT\Key; 
+use \Firebase\JWT\Key;
+
 class User
 {
     public $id;
@@ -26,8 +29,8 @@ class User
 			$key = $_ENV['JWT_KEY'];
 			$decoded = JWT::decode($token, new Key($key, 'HS256'));
 			$userId = $decoded->data->id;
-			return (bool) (new UsersModel())->get((int)$userId);
-		} catch (Exception $e) {
+			return (bool) (new \UsersModel())->get((int)$userId);
+		} catch (\Exception $e) {
 			return false;
 		}
 	}

@@ -16,15 +16,7 @@ class App {
 
 		$app->any('/api[/{path:.*}]', function (Request $request, Response $response, $args) {
 			$apiResponse = (new \ApiController($request, $response))->handleRequest();
-			if (isset($apiResponse['status']) && $apiResponse['status'] === 405) {
-				$response->getBody()->write($apiResponse['data']);
-				return $response
-					->withStatus(405)
-					->withHeader('Content-Type', 'application/json')
-				;
-			}
-			$response->getBody()->write($apiResponse);
-			return $response->withHeader('Content-Type', 'application/json');
+			return $apiResponse;
 		});
 
 		$this->_initMiddleware($app);
@@ -50,6 +42,6 @@ class App {
 		register_shutdown_function($shutdownHandler);
 
 		$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
-		$errorMiddleware->setDefaultErrorHandler($errorHandler);
+		//$errorMiddleware->setDefaultErrorHandler($errorHandler);
 	}
 }

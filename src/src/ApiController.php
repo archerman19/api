@@ -2,6 +2,7 @@
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use entity\User;
 
 class ApiController {
 	protected Request $request;
@@ -12,7 +13,7 @@ class ApiController {
 		$this->response = $response;
 	}
 	
-	public function handleRequest() {
+	public function handleRequest() : Response {
 		$pathParts = explode('/', $this->request->getAttribute('path'));
 		$version = $pathParts[0];
 		$module = ucfirst($pathParts[1]);
@@ -26,20 +27,20 @@ class ApiController {
 			$token = $this->request->getHeader('token');
 			$isAuth = (new User)->checkValidToken($token[0]);
 			if ($isAuth === false) {
-				$status = 405;
-				$data = json_encode([
-					'statusCode' => $status,
+				$this->response->getBody()->write(
+					json_encode([
 					'data' => [],
 					'error' => ['Отказано в доступе']
-				]);
-				return ['status' => $status, 'data' => $data];
+					])
+				);
+				return $this->response->withHeader('Content-Type', 'application/json')->withStatus(405);
 			}
 		}
 
 		return call_user_func_array([new $className($this->request, $this->response), $method], $params);
 	}
 
-	private function getAccess($classname, $method) {
+	private function getAccess($classname, $method) : string {
 		$result = '';
 
 		if (!class_exists($classname)) {
@@ -53,10 +54,9 @@ class ApiController {
 
 		$classMethod = $class->getMethod($method);
 		foreach (explode("\n", $classMethod->getDocComment()) as $doc) {
-			if (preg_match('/@access(.*?)$/is', $doc, $match)) {
+			if (preg_match('/@access(.*)$/is', $doc, $match)) {
 				preg_match_all('/(\$?\w+)/', $match[1], $match, PREG_SET_ORDER);
 				$result = array_shift($match)[0];
-
 			}
 		}
 

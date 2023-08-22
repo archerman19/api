@@ -4,13 +4,9 @@ namespace Api\v0;
 
 use UsersModel;
 use Firebase\JWT\JWT;
+use entity\User;
 
 class Users extends ApiAbstract {
-
-	public function auth() {
-		$this->data[] = 'Ok';
-		return $this->toJson();
-	}
 
 	public function createUser() {
 		$data = $this->request->getBody()->getContents();
@@ -23,7 +19,7 @@ class Users extends ApiAbstract {
 			$this->error[] = 'Ошибка регистрации';
 		}
 
-		return $this->toJson();
+		return $this->response();
 	}
 
 	/**
@@ -36,7 +32,7 @@ class Users extends ApiAbstract {
 		$data = json_decode($data, true);
 		$userId = (new UsersModel)->emailExist($data['email']);
 		$user = (new UsersModel)->get((int)$userId);
-		$user = \User::createFromArray($user);
+		$user = User::createFromArray($user);
 
 		if ($user != null && password_verify($data['password'], $user->password)) {
 			$token = [
@@ -60,6 +56,6 @@ class Users extends ApiAbstract {
 			$this->error[] = 'Не удалось войти в систему';
 		}
 
-		return $this->toJson();
+		return $this->response();
 	}
 }

@@ -11,7 +11,7 @@ class Products extends ApiAbstract {
 	 * @return string
 	 */
 	public function getProduct(int $id, string $name) {
-		$this->data['response'] = "It is product with id $id and name $name";
-		return $this->toJson();
+		$this->data['info'] = "It is product with id $id and name $name";
+		return $this->response();
 	}
 }
