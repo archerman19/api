@@ -9,26 +9,41 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use Dotenv\Dotenv;
 
 class App {
-	public function start() {
+	/**
+	 * Запуск приложения
+	 *
+	 * @return void
+	 */
+	public function start() : void {
 		$this->initEnv();
 
 		$app = AppFactory::create();
 
-		$app->any('/api[/{path:.*}]', function (Request $request, Response $response, $args) {
-			$apiResponse = (new \ApiController($request, $response))->handleRequest();
-			return $apiResponse;
+		$app->any('/api[/{path:.*}]', function (Request $request, Response $response) {
+			return (new \ApiController($request, $response))->handleRequest();
 		});
 
-		$this->_initMiddleware($app);
+		$this->initMiddleware($app);
 
 		$app->run();
 	}
 
-	public function initEnv() {
+	/**
+	 * Инициализация переменных окружения
+	 *
+	 * @return void
+	 */
+	public function initEnv() : void {
 		Dotenv::createUnsafeImmutable(__DIR__ . '/../../')->load();
 	}
 
-	private function _initMiddleware(\Slim\App $app) {
+	/**
+	 * Инициализация промежуточного ПО
+	 *
+	 * @param \Slim\App $app
+	 * @return void
+	 */
+	private function initMiddleware(\Slim\App $app) : void {
 		$displayErrorDetails = $_ENV['DISPLAY_ERROR_DETAILS'];
 
 		$callableResolver = $app->getCallableResolver();
@@ -42,6 +57,6 @@ class App {
 		register_shutdown_function($shutdownHandler);
 
 		$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
-		//$errorMiddleware->setDefaultErrorHandler($errorHandler);
+		$errorMiddleware->setDefaultErrorHandler($errorHandler);
 	}
 }

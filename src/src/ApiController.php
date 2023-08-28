@@ -40,7 +40,7 @@ class ApiController {
 		return call_user_func_array([new $className($this->request, $this->response), $method], $params);
 	}
 
-	private function getAccess($classname, $method) : string {
+	private function getAccess(string $classname, string $method) : string {
 		$result = '';
 
 		if (!class_exists($classname)) {

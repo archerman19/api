@@ -5,17 +5,21 @@ namespace entity;
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 
-class User
-{
-    public $id;
-    public $firstname;
-    public $lastname;
-    public $email;
-    public $password;
+class User {
+    public int $id;
+    public string $firstname;
+    public string $lastname;
+    public string $email;
+    public string $password;
 
-	public static function createFromArray(array $data) {
+	/**
+	 *
+	 * @param array<mixed> $data
+	 * @return self
+	 */
+	public static function createFromArray(array $data) : self {
 		$user = new self();
-		$user->id = $data['id'];
+		$user->id = (int)$data['id'];
 		$user->firstname = $data['firstname'];
 		$user->lastname = $data['lastname'];
 		$user->email = $data['email'];
@@ -24,6 +28,12 @@ class User
 		return $user;
 	}
 
+	/**
+	 * Проверка токена
+	 *
+	 * @param string $token
+	 * @return boolean
+	 */
 	public function checkValidToken(string $token) : bool {
 		try {
 			$key = $_ENV['JWT_KEY'];

@@ -5,8 +5,16 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 abstract class ApiAbstract {
+	/**
+	 * @var array<mixed>
+	 */
 	protected array $data = [];
+
+	/**
+	 * @var array<mixed>
+	 */
 	protected array $error = [];
+
 	protected Request $request;
 	protected Response $response;
 
@@ -15,7 +23,13 @@ abstract class ApiAbstract {
 		$this->response = $response;
 	}
 
-	protected function response(int $statusCode = 200) {
+	/**
+	 * Метод для унификации ответа api
+	 *
+	 * @param int $statusCode
+	 * @return Response
+	 */
+	protected function response(int $statusCode = 200) : Response {
 		$this->response->getBody()->write(
 			json_encode([
 			'data' => $this->data,

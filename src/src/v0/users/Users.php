@@ -5,10 +5,16 @@ namespace Api\v0;
 use UsersModel;
 use Firebase\JWT\JWT;
 use entity\User;
+use Psr\Http\Message\ResponseInterface as Response;
 
 class Users extends ApiAbstract {
 
-	public function createUser() {
+	/**
+	 * Создать пользователя
+	 *
+	 * @return Response
+	 */
+	public function createUser() : Response {
 		$data = $this->request->getBody()->getContents();
 		$data = json_decode($data, true);
 
@@ -24,10 +30,8 @@ class Users extends ApiAbstract {
 
 	/**
 	 * Вход в систему
-	 *
-	 * @return string
 	 */
-	public function login() {
+	public function login() : Response {
 		$data = $this->request->getBody()->getContents();
 		$data = json_decode($data, true);
 		$userId = (new UsersModel)->emailExist($data['email']);

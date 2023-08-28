@@ -12,8 +12,7 @@ use Slim\Exception\HttpNotImplementedException;
 use Slim\Exception\HttpUnauthorizedException;
 use Slim\Handlers\ErrorHandler;
 
-class HttpErrorHandler extends ErrorHandler
-{
+class HttpErrorHandler extends ErrorHandler {
     public const BAD_REQUEST = 'BAD_REQUEST';
     public const INSUFFICIENT_PRIVILEGES = 'INSUFFICIENT_PRIVILEGES';
     public const NOT_ALLOWED = 'NOT_ALLOWED';
@@ -50,7 +49,7 @@ class HttpErrorHandler extends ErrorHandler
 
         if (
             !($exception instanceof HttpException)
-            && ($exception instanceof \Exception || $exception instanceof \Throwable)
+            && ($exception instanceof \Throwable)
             && $this->displayErrorDetails
         ) {
             $description = $exception->getMessage();

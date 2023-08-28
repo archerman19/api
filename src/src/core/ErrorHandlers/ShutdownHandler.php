@@ -6,8 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Exception\HttpInternalServerErrorException;
 use Slim\ResponseEmitter;
 
-class ShutdownHandler
-{
+class ShutdownHandler {
     /**
      * @var Request
      */
@@ -36,8 +35,7 @@ class ShutdownHandler
         $this->displayErrorDetails = $displayErrorDetails;
     }
 
-    public function __invoke()
-    {
+    public function __invoke() : void {
         $error = error_get_last();
         if ($error) {
             $errorFile = $error['file'];
@@ -69,7 +67,9 @@ class ShutdownHandler
             }
 
             $exception = new HttpInternalServerErrorException($this->request, $message);
-            $response = $this->errorHandler->__invoke($this->request, $exception, $this->displayErrorDetails, false, false);
+            $response = $this->errorHandler->__invoke(
+				$this->request, $exception, $this->displayErrorDetails, false, false
+			);
 
             if (ob_get_length()) {
               ob_clean();

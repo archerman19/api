@@ -3,15 +3,20 @@
 use config\Database;
 
 class UsersModel {
-	protected $db;
-	private $table_name = 'users';
+	protected PDO $db;
+	private string $tableName = 'users';
 
 	public function __construct() {
 		$database = new Database();
 		$this->db = $database->getConnection();
 	}
 
-	public function create(array $data) {
+	/**
+	 *
+	 * @param array<string> $data
+	 * @return bool
+	 */
+	public function create(array $data) : bool {
 		if (
 			isset($data['firstname']) &&
 			isset($data['lastname']) &&
@@ -20,7 +25,7 @@ class UsersModel {
 			!$this->emailExist($data['email'])
 		) {
 			// Запрос для добавления нового пользователя в БД
-			$query = "INSERT INTO " . $this->table_name . "
+			$query = "INSERT INTO " . $this->tableName . "
 			SET
 				firstname = :firstname,
 				lastname = :lastname,
@@ -50,14 +55,23 @@ class UsersModel {
 		return false;
 	}
 
-	public function emailExist(string $mail) {
+	/**
+	 * Проверить существование почты
+	 */
+	public function emailExist(string $mail) : int {
 		$stmt = $this->db->prepare('SELECT id FROM users WHERE email = ?');
 		$stmt->execute([$mail]);
 		$id = $stmt->fetchColumn();
-		return $id;
+		return (int)$id;
 	}
 
-	public function get(int $id) {
+	/**
+	 * Получить данные пользователя
+	 *
+	 * @param int $id
+	 * @return mixed
+	 */
+	public function get(int $id) : mixed {
 		$stmt = $this->db->prepare('SELECT id, firstname, lastname, password, email FROM users WHERE id = ?');
 		$stmt->execute([$id]);
 		return $stmt->fetch(PDO::FETCH_ASSOC);
