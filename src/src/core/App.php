@@ -15,6 +15,7 @@ class App {
 	 * @return void
 	 */
 	public function start() : void {
+		date_default_timezone_set('Europe/Samara');
 		$this->initEnv();
 
 		$app = AppFactory::create();
@@ -57,6 +58,6 @@ class App {
 		register_shutdown_function($shutdownHandler);
 
 		$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
-		$errorMiddleware->setDefaultErrorHandler($errorHandler);
+		//$errorMiddleware->setDefaultErrorHandler($errorHandler);
 	}
 }

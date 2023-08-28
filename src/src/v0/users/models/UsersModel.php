@@ -1,15 +1,9 @@
 <?php
 
-use config\Database;
+use core\BaseModel;
 
-class UsersModel {
-	protected PDO $db;
-	private string $tableName = 'users';
-
-	public function __construct() {
-		$database = new Database();
-		$this->db = $database->getConnection();
-	}
+class UsersModel  extends BaseModel {
+	protected string $tableName = 'users';
 
 	/**
 	 *
@@ -63,17 +57,5 @@ class UsersModel {
 		$stmt->execute([$mail]);
 		$id = $stmt->fetchColumn();
 		return (int)$id;
-	}
-
-	/**
-	 * Получить данные пользователя
-	 *
-	 * @param int $id
-	 * @return mixed
-	 */
-	public function get(int $id) : mixed {
-		$stmt = $this->db->prepare('SELECT id, firstname, lastname, password, email FROM users WHERE id = ?');
-		$stmt->execute([$id]);
-		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 }
