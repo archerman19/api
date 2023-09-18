@@ -22,6 +22,8 @@ services:
     depends_on:
       - db
     stdin_open: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   db:
     image: mysql:8.0
     cap_add:
