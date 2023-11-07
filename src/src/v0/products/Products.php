@@ -32,6 +32,7 @@ class Products extends ApiAbstract {
 
 		return $this->response();
 	}
+
 	/**
 	 * Получить продукт
 	 *

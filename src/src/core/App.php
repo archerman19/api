@@ -45,7 +45,7 @@ class App {
 	 * @return void
 	 */
 	private function initMiddleware(\Slim\App $app) : void {
-		$displayErrorDetails = $_ENV['DISPLAY_ERROR_DETAILS'];
+		$displayErrorDetails = (bool) $_ENV['DISPLAY_ERROR_DETAILS'];
 
 		$callableResolver = $app->getCallableResolver();
 		$responseFactory = $app->getResponseFactory();
@@ -58,6 +58,6 @@ class App {
 		register_shutdown_function($shutdownHandler);
 
 		$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, false, false);
-		//$errorMiddleware->setDefaultErrorHandler($errorHandler);
+		$errorMiddleware->setDefaultErrorHandler($errorHandler);
 	}
 }

@@ -25,6 +25,15 @@ class ApiController {
 
 		if ($access === 'auth') {
 			$token = $this->request->getHeader('token');
+			if (empty($token)) {
+				$this->response->getBody()->write(
+					json_encode([
+					'data' => [],
+					'error' => ['parameter token is required']
+					])
+				);
+				return $this->response->withHeader('Content-Type', 'application/json')->withStatus(400);
+			}
 			$isAuth = (new User)->checkValidToken($token[0]);
 			if ($isAuth === false) {
 				$this->response->getBody()->write(
